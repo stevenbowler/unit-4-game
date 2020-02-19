@@ -471,7 +471,7 @@ var darthVaderLifeForce = Number(Math.round(Math.random() * 100 + 400));
  * @type {number}
  * @default
  */
-var darthVaderAttackForce = 30;
+var darthVaderAttackForce = 45;
 
 /**
  * darthVader div for game
@@ -505,7 +505,7 @@ var darthMaulLifeForce = Number(Math.round(Math.random() * 200 + 300));
  * @type {number}
  * @default
  */
-var darthMaulAttackForce = 40;
+var darthMaulAttackForce = 55;
 
 /**
  * darthVader div for game
@@ -539,7 +539,7 @@ var darthSidiousLifeForce = Number(Math.round(Math.random() * 150 + 350));
  * @type {number}
  * @default
  */
-var darthSidiousAttackForce = 35;
+var darthSidiousAttackForce = 50;
 
 /**
  * chosenHero div for game
