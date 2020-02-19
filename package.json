@@ -1,0 +1,26 @@
+{
+  "name": "unit-4-game",
+  "version": "1.0.0",
+  "description": "Homework 4 for UTA Bootcamp",
+  "main": "index.html",
+  "scripts": {
+    "doc": "jsdoc -c jsdoc.json"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/stevenbowler/unit-4-game.git"
+  },
+  "author": "Steven Bowler",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/stevenbowler/unit-4-game/issues"
+  },
+  "homepage": "https://github.com/stevenbowler/unit-4-game#readme",
+  "dependencies": {
+    "@types/jquery": "^3.3.32",
+    "jquery-ui": "^1.12.1"
+  },
+  "devDependencies": {
+    "jsdoc": "^3.6.3"
+  }
+}
