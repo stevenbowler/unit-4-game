@@ -1,6 +1,59 @@
 // @ts-check
 
 /**
+ * THIS IS STILL A TEST OF OOP, SET A CLASS TO ELIMINATE REPETITION IN {@link chooseHero}
+ * later will be applied to {@link chooseVillain}
+ * @class WarriorHero
+ * @function constructor
+ * @param {JQuery} selector
+ */
+class WarriorHero {
+    constructor(selector, name, div, jpg, lifeForce, attackForce) {
+        this.selector = selector;
+        this.name = name;
+        this.div = div;
+        this.jpg = jpg;
+        this.lifeforce = lifeForce;
+        this.attackForce = attackForce;
+    }
+
+    display() {
+        lukeSkywalker
+            .css({ display: "block" })
+            .addClass("heroChoice")
+            .html(lukeSkywalkerJPG + "Life Force: " + lukeSkywalkerLifeForce + "<br>Attack Force: " + lukeSkywalkerAttackForce);
+        // lukeSkywalker.html(lukeSkywalkerJPG);
+        gameSpace.append(this.selector);
+        animateCSS("#lukeSkywalker", "zoomInRight");
+        $('#lukeSkywalker').on("click", function () {
+            console.log(this.name + " chosen");
+            hero
+                .html(this.jpg)
+                .css({ display: "block" });
+            heroName = this.name;
+            heroLifeForce = this.lifeForce;
+            heroAttackForceStart = this.attackForce;
+            heroAttackForce = this.attackForce;
+            blankOutVillainChoice();
+        });
+    }
+}
+
+
+/**
+ * 
+ */
+const lukeSkywalkerObj = new WarriorHero({
+    selector: $("<div id=lukeSkywalker>"),
+    name: "lukeSkywalker",
+    div: "<div id='hero'>",
+    jpg: '<img src="./assets/img/lukeSkywalker.jpg" height=100% width=100%>',
+    lifeForce: Number(Math.round(Math.random() * 100 + 400)),
+    attackForce: 300
+});
+
+
+/**
  * jQuery object
  * @external jQuery
  * @see {@link http://api.jquery.com/jQuery/}
@@ -38,13 +91,12 @@ const gameInstructions =
     "Choose your hero character first.  " +
     "Then choose 3 opponents, one at a time.  " +
     "The experience of fighting will build your attack strengh, " +
-    "so choose weakest opponent first, and learn.  " +
-    "Use arrow-keys or buttons to move towards opponent and attack.  " +
-    "Survive defeating 3 opponents while keeping positive Health Points (HP)." +
+    "so choose wisely, and learn.  Attack using arrow keys or buttons." +
+    "<br><strong>Keep positive life force (Health Points, HP) and live.</strong>" +
     "<br><br><strong>Hit any key to continue once you have read the instructions above.</strong>";
 
 /**
- * User instructions before game start
+ * User instructions to display after hero wins called from {@link endGame}
  * @constant
  * @type {string}
  * @default
@@ -54,7 +106,7 @@ const universeSavedInstruction =
     "<strong>Hit any key to save this or any other universe. </strong> ";
 
 /**
- * User instructions before game start
+ * User instructions to display after hero loses called from {@link endGame}
  * @constant
  * @type {string}
  * @default
@@ -64,13 +116,13 @@ const allIsLostInstruction =
     "<strong>Hit any key to try and save another universe.  </strong>";
 
 /**
- * User instructions to select hero
+ * User instructions when selecting hero from {@link chooseHero}
  * @constant
  * @type {string}
  * @default
  */
 const chooseHeroInstructions =
-    "Choose one of the these characters as your alter-ego.  ";
+    "Choose one of the these characters as your hero alter-ego.  ";
 
 //   const parseS = (sString) => Number(sString.slice(sString, -1, 1));     // parse out "s" return integer
 
@@ -92,7 +144,7 @@ const parseS = (sString) => Number(sString.slice(sString, -1, 1));     // parse 
 
 
 /**
- * Alias for id=gameSpace getElement
+ * Alias for id=gameSpace JQuery Selector
  * @constant
  * @type {JQuery}
  * @default
@@ -116,7 +168,7 @@ const gameSpacePadding = parsePX(gameSpace.css('padding-right'));
 const gameSpaceWidth = gameSpace.width() + (gameSpacePadding * 2);
 
 /**
- * game is played within this width
+ * game is played within this height
  * @constant
  * @type {number}
  * @default
@@ -124,13 +176,13 @@ const gameSpaceWidth = gameSpace.width() + (gameSpacePadding * 2);
 const gameSpaceHeight = gameSpace.height();
 
 /**
- * Used in relocateVillain for random reset of villain position after contact
+ * Used in {@link relocateVillain} for random reset of villain position after contact
  * @type {string}
  */
 var topPosition = "";
 
 /**
- * Used in relocateVillain for random reset of villain position after contact
+ * Used in {@link relocateVillain} for random reset of villain position after contact
  * @type {string}
 */
 var leftPosition = "";
@@ -145,7 +197,7 @@ var leftPosition = "";
 const gameHelp = $("#gameHelp");
 
 /**
- * Alias for id=hangmanPhoto JQuery selector
+ * Alias for id=hero JQuery selector
  * @constant
  * @type {JQuery}
  * @default
@@ -154,7 +206,7 @@ const gameHelp = $("#gameHelp");
 
 
 /**
- * Alias for id=composerClues getElement
+ * Alias for id=gameClues getElement
  * @constant
  * @type {JQuery}
  * @default
@@ -170,6 +222,23 @@ const gameClues = $("#gameClues");
 const gameStatus = $("#gameStatus");
 
 /**
+ * Alias for id=gameScore on test out string literals, {@link updateScoreBoard}
+ *      used for updating heroAttackForce as it increases thru the game
+ * @constant
+ * @type {JQuery}
+ * @default
+ */
+const heroStatusLabel = $("#heroStatusLabel");
+
+/**
+ * Alias for id=heroStatusLabel on test out string literals
+ * 
+ * @type {string}
+ * @default
+ */
+var heroStatusLabelContent = "Hero Life Force below, Attack force" + `${gameOn ? heroAttackForce : ''}`;
+
+/**
  * Alias for id=gameAudio getElement
  * @constant
  * @type {HTMLElement}
@@ -178,7 +247,7 @@ const gameStatus = $("#gameStatus");
 const gameAudio = document.getElementById("gameAudio");
 
 /**
- * Hero div for game
+ * Hero div for game alias for JQuery Selector
  * @type {JQuery}
  * @default
  */
@@ -186,7 +255,7 @@ const hero = $("<div id=hero>");
 
 
 /**
- * Outer edge of hero in px
+ * Outer edge of hero in px {@link contact}
  * 
  * @type {number}
  * @default
@@ -194,7 +263,7 @@ const hero = $("<div id=hero>");
 var heroTop = parsePX(hero.css("top"));
 
 /**
- * Outer edge of hero in px
+ * Outer edge of hero in px {@link contact}
  * 
  * @type {number}
  * @default
@@ -202,7 +271,7 @@ var heroTop = parsePX(hero.css("top"));
 var heroBottom = parsePX(hero.css("bottom"));
 
 /**
- * Outer edge of hero in px
+ * Outer edge of hero in px {@link contact}
  * 
  * @type {number}
  * @default
@@ -210,7 +279,7 @@ var heroBottom = parsePX(hero.css("bottom"));
 var heroLeft = parsePX(hero.css("left"));
 
 /**
- * Outer edge of hero in px
+ * Outer edge of hero in px {@link contact}
  * 
  * @type {number}
  * @default
@@ -218,7 +287,7 @@ var heroLeft = parsePX(hero.css("left"));
 var heroRight = parsePX(hero.css("right"));
 
 /**
- * Hero life force status div for game
+ * Hero life force status div for game progress bar 
  * @constant
  * @type {JQuery}
  * @default
@@ -236,7 +305,7 @@ const heroScoreId = document.getElementById("heroStatus");
 
 
 /**
- * Hero div for game
+ * Hero name div for game, currently not used
  * @type {string}
  * @default
  */
@@ -272,14 +341,14 @@ var heroAttackForce = 0;
 const villain = $("<div id=villain>");
 
 /**
- * Outer edge of villain in px
+ * Outer edge of villain in px {@link contact}
  * 
  * @type {number}
  * @default
  * */
 var villainTop = parsePX(villain.css("top"));
 /**
- * Outer edge of villain in px
+ * Outer edge of villain in px {@link contact}
  * 
  * @type {number}
  * @default
@@ -287,7 +356,7 @@ var villainTop = parsePX(villain.css("top"));
 var villainBottom = parsePX(villain.css("bottom"));
 
 /**
- * Outer edge of villain in px
+ * Outer edge of villain in px {@link contact}
  * 
  * @type {number}
  * @default
@@ -295,7 +364,7 @@ var villainBottom = parsePX(villain.css("bottom"));
 var villainLeft = parsePX(villain.css("left"));
 
 /**
- * Outer edge of villain in px
+ * Outer edge of villain in px {@link contact}
  * 
  * @type {number}
  * @default
@@ -333,21 +402,21 @@ var villainName = "";
 var villainLifeForce = 0;
 
 /**
- * villain life force
+ * villain life force start
  * @type {number}
  * @default
  */
 var villainLifeForceStart = 0;
 
 /**
- * villain life force
+ * villain attack force
  * @type {number}
  * @default
  */
 var villainAttackForce = 0;
 
 /**
- * villain life force
+ * villain Dead Count called from {@link onContact} at >=3 calls {@link endVillain}
  * @type {number}
  * @default
  */

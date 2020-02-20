@@ -30,17 +30,22 @@
 
 $(document).ready(function () {
 
-
+    /**
+     * Marker for program top, 1st keystroke calls {@link preGame}, 2nd keystroke calls {@link doBattle}, then all call {@link heroMove}
+     * @function top
+     */
+    const top = () => { }
     /**
      * Main entrance point for the entire program
-     * @function $(document).keyup
-     * @param {object} e
+     * @function  $(document).keyup
+     * @param {object} e event object for keyup events, main driver for program
      */
     $(document).keyup(function (e) {
         if (startCount == 0) {      // User launches game with first keystroke
             startCount++;           // After that all keystrokes move the hero div element
-            playAudio();
-            loadPrepGame();
+            playAudio("StarWarsTheme");
+            preGame();
+            updateScoreBoard();
             console.log(gameSpaceWidth, gameSpacePadding);
             return;
         }
@@ -136,8 +141,11 @@ $(document).ready(function () {
 
 });
 
-
-const loadPrepGame = () => {
+/**
+ * Called from document.onkeyup on first keystroke {@link top}
+ * @function preGame
+ */
+const preGame = () => {
     console.log("loadStartGame");
     heroLifeForce = 500;
     villainLifeForce = 500;
@@ -206,12 +214,13 @@ var testObjectChooseHero = {
 }
 
 /**
- * Called from first keystroke after page load
+ * Called from {@link preGame}, displays 3 hero images with onClick to choose hero, then {@link blankOutHeroChoice}
+ * @function chooseHero
  */
 const chooseHero = () => {
-    // testLiteral("lukeSkywalker");
-    // add luke skywalker photo and onclick selection
-    // lukeSkywalker.add("id", "lukeSkywalker");
+
+    // lukeSkywalkerObj.display();   // will require WarriorHero class working can't get selector working
+
     lukeSkywalker
         .css({ display: "block" })
         .addClass("heroChoice")
@@ -271,7 +280,10 @@ const chooseHero = () => {
 
 }
 
-
+/**
+ * Called from {@link chooseHero} removes hero images from display, then calls {@link chooseVillain}
+ * @function blankOutHeroChoice
+ */
 const blankOutHeroChoice = () => {
     animateCSS("#lukeSkywalker", "zoomOutRight", function () {
         lukeSkywalker.empty();
@@ -304,7 +316,11 @@ const blankOutHeroChoice = () => {
 // hero.css({ display: "block" });
 //$(".hero").effect("explode", "slow"); //works
 
-
+/**
+ * Called from {@link blankOutHeroChoice}, display villain choices, select villain if not previously chosen, 
+ *      then {@link blankOutVillainChoice}
+ * @function chooseVillain
+ */
 const chooseVillain = () => {
     //if (heroName === "") return;  // if hero not chosen yet return
     console.log("chooseVillain");
@@ -371,7 +387,9 @@ const chooseVillain = () => {
     }
 }
 
-
+/**
+ * Called from {@link chooseVillain}, remove all villains displayed, set {@link gameReady} = true
+ */
 const blankOutVillainChoice = () => {
     if (!darthMaulChosen) {
         animateCSS("#darthMaul", "zoomOutRight", function () {
@@ -401,32 +419,45 @@ const blankOutVillainChoice = () => {
     villain.css("top", "0px");
     villain.css("left", (gameSpaceWidth - villain.width()) + "px");
     villain.css({ display: "inline" });
+    updateScoreBoard();
     gameReady = true;
 }
 
+
+/**
+ * called from {@link top} main key event from game load and ready or from {@link pickNextVillain} for each next round
+ * @function doBattle
+ */
 const doBattle = () => {
     console.log("doBattle");
     updateScoreBoard();
-    setBattleBackGround();
+    setBattleBackGround("sunSet");
     relocateVillain();
     resetGameVariables();
     startGameTimer();
 }
 
-const setBattleBackGround = () => {
-    console.log("changeBackGround");
+
+/**
+ * called from various points in program to reset the background image
+ * @function setBattleBackGround
+ * @param {string} imageText
+ */
+const setBattleBackGround = (imageText) => {
+    console.log("changeBackGround", "imageText: ", imageText);
     if (villainDeadCount >= 1) return;  // don't reset music and background between villain rounds (if game in progress)
+    if (imageText == "") imageText = "space";
     gameSpace.css({
-        background: "url(../unit-4-game/assets/img/sunSet.gif) no-repeat",
+        background: "url(../unit-4-game/assets/img/" + imageText + ".gif) no-repeat",
         backgroundSize: "100% 100%"
     });
-    gameAudio.src = "./assets/audio/DuellingFates.mp3";
-    playAudio();
+    //gameAudio.src = "./assets/audio/DuellingFates.mp3";
+    playAudio("DuellingFates");
 }
 
 
 /**
- * called from doBattle at end of each round
+ * called from {@link doBattle} at end of each round
  * @function resetGameVariables
  */
 const resetGameVariables = () => {
@@ -441,7 +472,7 @@ const resetGameVariables = () => {
 var timerID = "";
 
 /**
- * set game timer calls handleMoves to react to current conditions/coordinates of hero and villain
+ * Called from {@link doBattle} to set game timer then calls {@link handleMoves} to react to current conditions/coordinates of hero and villain
  * @function startGameTimer
  */
 const startGameTimer = () => {
@@ -452,7 +483,8 @@ const startGameTimer = () => {
 }
 
 /**
- * called from end??? to turn off game timer when each round of the game
+ * called from {@link onContact} if either {@link heroLifeForce} or {@link villainLifeForce} &lt; 0 
+ *      turn off game timer when each round of the game
  * @function stopGameTimer
  */
 const stopGameTimer = () => {
@@ -460,8 +492,8 @@ const stopGameTimer = () => {
 }
 
 /**
- * Each time there is a move need to check if contact, 
- *     then update scores and game status: win, lose, stillOn relocateVillain.
+ * Called from {@link startGameTimer} Each time there is a move need to check if contact, 
+ *     then update scores and game status: win, lose, gameOn still then relocateVillain.
  * @function handleMoves
  */
 const handleMoves = () => {
@@ -472,9 +504,8 @@ const handleMoves = () => {
 
 
 /**
- * called from game timer, update life forces, updateScoreBoard
+ * called from {@link handleMoves} game timer, update life forces, updateScoreBoard
  * @function onContact
- * 
  */
 const onContact = () => {
     villainLifeForce = villainLifeForce - heroAttackForce;
@@ -488,7 +519,7 @@ const onContact = () => {
 
 
 /**
- * determines if there was contact between hero and villain
+ * determines if there was contact between hero and villain, called from {@link onContact}
  * @function contact
  * @returns {boolean}
  */
@@ -506,7 +537,7 @@ const contact = () => {
 
 
 /**
- * Called from contact boolean function to set latest positions of hero and villain for contact/overlap condition
+ * Called from {@link contact} boolean function to set latest positions of hero and villain for contact/overlap condition
  * @function refreshHeroVillainCoordinates
  */
 const refreshHeroVillainCoordinates = () => {
@@ -522,7 +553,8 @@ const refreshHeroVillainCoordinates = () => {
 
 
 /**
- * update the hero &amp; villain progress bars
+ * update the hero &amp; villain progress bars, 
+ * called from {@link onContact} {@link resetGameVariables} {@link blankOutVillain} {@link doBattle}
  * @function updateScoreBoard
  */
 const updateScoreBoard = () => {
@@ -532,11 +564,13 @@ const updateScoreBoard = () => {
     heroScoreId.style.width = Math.round(heroLifeForce / 5).toString() + "%";
     villainScoreId.innerHTML = villainLifeForce.toString();
     villainScoreId.style.width = Math.round(villainLifeForce / 5).toString() + "%";
+    heroStatusLabelContent = "Hero Life Force " + `${gameOn ? 'below, Attack force: ' : ''}` + `${gameOn ? heroAttackForce : ''}`;
+    heroStatusLabel.html(heroStatusLabelContent);
 }
 
 
 /** 
- * Sends hero to home position while selecting next villain called from onContact when villainLifeForce &lt; 0
+ * Sends hero to home position while selecting next villain called from {@link onContact} when villainLifeForce &lt; 0
  * @function homeHero
  * */
 const homeHero = () => {
@@ -546,7 +580,7 @@ const homeHero = () => {
 
 
 /**
- * called from onContact when villainLifeForce &lt;= 0
+ * called from {@link onContact} when villainLifeForce &lt;= 0
  * @function endVillain
  */
 const endVillain = () => {
@@ -560,7 +594,7 @@ const endVillain = () => {
 
 
 /**
- * called from endVillain when at least one of the 3 villains has not been terminated yet
+ * called from {@link endVillain} when at least one of the 3 villains has not been terminated yet
  * @function pickNextVillain
  */
 const pickNextVillain = () => {
@@ -571,7 +605,7 @@ const pickNextVillain = () => {
 
 
 /**  random number from 16 to 59     
- * called from startGame or pickNextVillain or onContact when villain hit by hero
+ * called from {@link startGame} or {@link pickNextVillain} or {@link onContact} when villain hit by hero
  * @function relocateVillain
  */
 const relocateVillain = () => {
@@ -584,16 +618,17 @@ const relocateVillain = () => {
 }
 
 /**
- * Called from onContact when hero life force &lt;= 0 or when 3rd villain lifeForce &lt;= 0
+ * Called from {@link onContact} when hero life force &lt;= 0 or when 3rd villain lifeForce &lt;= 0
  */
 const endHero = () => {
     console.log("endHero");
+    villain.css({ display: "none" });
     endGame();
 }
 
 
 /**
- * called from either endVillain or endHero to end the game
+ * called from either {@link endVillain} or {@link endHero} to end the game
  * @function endGame
  */
 const endGame = () => {
@@ -603,6 +638,7 @@ const endGame = () => {
     gameReady = false;
     hero.css({ display: "none" });
     villain.css({ display: "none" });
+    if (villainDeadCount &lt; 3) blankOutVillainChoice();
     hero.empty();
     villain.empty();
     darthMaulChosen = false;
@@ -615,15 +651,16 @@ const endGame = () => {
 
 
 /**
- * End of game when hero wins, called from endGame
+ * Called from {@link endGame} when hero wins with {@link heroLifeForce} positive
  * @function universeSaved
  */
 const universeSaved = () => {
     console.log("universeSaved");
-    gameSpace.css({
-        background: "url(../unit-4-game/assets/img/lonelySpace.gif) no-repeat",
-        backgroundSize: "100% 100%"
-    });
+    setBattleBackGround("lonelySpace");
+    // gameSpace.css({
+    //     background: "url(../unit-4-game/assets/img/lonelySpace.gif) no-repeat",
+    //     backgroundSize: "100% 100%"
+    // });
 
     animateCSS("#gameStatus", "zoomOutLeft");
     gameStatus.css({ display: "none" });
@@ -632,21 +669,22 @@ const universeSaved = () => {
         animateCSS('#gameClues', 'zoomInLeft');
     });
 
-    gameAudio.src = "./assets/audio/AnakinsSymphony.mp3";
-    playAudio();
+    //gameAudio.src = "./assets/audio/AnakinsSymphony.mp3";
+    playAudio("AnakinsSymphony");
 }
 
 
 /**
- * End of game when villain wins, called from endVillain endGame
+ * Called from {@link endGame} when villain wins, when {@link heroLifeForce} &lt; 0
  * @function allIsLost
  */
 const allIsLost = () => {
     console.log("allIsLost");
-    gameSpace.css({
-        background: "url(../unit-4-game/assets/img/sun.gif) no-repeat",
-        backgroundSize: "100% 100%"
-    });
+    setBattleBackGround("sun");
+    // gameSpace.css({
+    //     background: "url(../unit-4-game/assets/img/sun.gif) no-repeat",
+    //     backgroundSize: "100% 100%"
+    // });
 
     animateCSS("#gameStatus", "zoomOutLeft");
     gameStatus.css({ display: "none" });
@@ -655,8 +693,7 @@ const allIsLost = () => {
         animateCSS('#gameClues', 'zoomInLeft');
     });
 
-    gameAudio.src = "./assets/audio/Evil.mp3";
-    playAudio();
+    playAudio("Evil");
 }
 
 
@@ -664,8 +701,10 @@ const allIsLost = () => {
 /** 
  * Called from restart() or from play music button on home screen
  * @function playAudio
+ * @param {string} songTitle if null then just play existing, string is name of .mp3 file without extension
  */
-const playAudio = () => {
+const playAudio = (songTitle) => {
+    if (songTitle !== "") gameAudio.src = "./assets/audio/" + songTitle + ".mp3";
     gameAudio.play();
 }
 
@@ -717,13 +756,13 @@ const animateCSS = (element, animationName, callback) => {
 </div>
 
 <nav>
-    <h2><a href="index.html">Star Wars Game</a></h2><h3>Externals</h3><ul><li><a href="external-jQuery.html">jQuery</a></li></ul><h3>Global</h3><ul><li><a href="global.html#$">$</a></li><li><a href="global.html#allIsLost">allIsLost</a></li><li><a href="global.html#allIsLostInstruction">allIsLostInstruction</a></li><li><a href="global.html#animateCSS">animateCSS</a></li><li><a href="global.html#benObiwan">benObiwan</a></li><li><a href="global.html#benObiwanAttackForce">benObiwanAttackForce</a></li><li><a href="global.html#benObiwanJPG">benObiwanJPG</a></li><li><a href="global.html#benObiwanLifeForce">benObiwanLifeForce</a></li><li><a href="global.html#chooseHero">chooseHero</a></li><li><a href="global.html#chooseHeroInstructions">chooseHeroInstructions</a></li><li><a href="global.html#chosenHero">chosenHero</a></li><li><a href="global.html#contact">contact</a></li><li><a href="global.html#darthMaul">darthMaul</a></li><li><a href="global.html#darthMaulAttackForce">darthMaulAttackForce</a></li><li><a href="global.html#darthMaulChosen">darthMaulChosen</a></li><li><a href="global.html#darthMaulJPG">darthMaulJPG</a></li><li><a href="global.html#darthMaulLifeForce">darthMaulLifeForce</a></li><li><a href="global.html#darthSidious">darthSidious</a></li><li><a href="global.html#darthSidiousAttackForce">darthSidiousAttackForce</a></li><li><a href="global.html#darthSidiousChosen">darthSidiousChosen</a></li><li><a href="global.html#darthSidiousJPG">darthSidiousJPG</a></li><li><a href="global.html#darthSidiousLifeForce">darthSidiousLifeForce</a></li><li><a href="global.html#darthVader">darthVader</a></li><li><a href="global.html#darthVaderAttackForce">darthVaderAttackForce</a></li><li><a href="global.html#darthVaderChosen">darthVaderChosen</a></li><li><a href="global.html#darthVaderJPG">darthVaderJPG</a></li><li><a href="global.html#darthVaderLifeForce">darthVaderLifeForce</a></li><li><a href="global.html#endGame">endGame</a></li><li><a href="global.html#endHero">endHero</a></li><li><a href="global.html#endVillain">endVillain</a></li><li><a href="global.html#gameAudio">gameAudio</a></li><li><a href="global.html#gameClues">gameClues</a></li><li><a href="global.html#gameHelp">gameHelp</a></li><li><a href="global.html#gameInstructions">gameInstructions</a></li><li><a href="global.html#gameOn">gameOn</a></li><li><a href="global.html#gameReady">gameReady</a></li><li><a href="global.html#gameScore">gameScore</a></li><li><a href="global.html#gameSpace">gameSpace</a></li><li><a href="global.html#gameSpaceHeight">gameSpaceHeight</a></li><li><a href="global.html#gameSpacePadding">gameSpacePadding</a></li><li><a href="global.html#gameSpaceWidth">gameSpaceWidth</a></li><li><a href="global.html#gameStartScore">gameStartScore</a></li><li><a href="global.html#gameStatus">gameStatus</a></li><li><a href="global.html#handleMoves">handleMoves</a></li><li><a href="global.html#hero">hero</a></li><li><a href="global.html#heroAttackForce">heroAttackForce</a></li><li><a href="global.html#heroAttackForceStart">heroAttackForceStart</a></li><li><a href="global.html#heroBottom">heroBottom</a></li><li><a href="global.html#heroLeft">heroLeft</a></li><li><a href="global.html#heroLifeForce">heroLifeForce</a></li><li><a href="global.html#heroName">heroName</a></li><li><a href="global.html#heroRight">heroRight</a></li><li><a href="global.html#heroScoreId">heroScoreId</a></li><li><a href="global.html#heroStatus">heroStatus</a></li><li><a href="global.html#heroTop">heroTop</a></li><li><a href="global.html#homeHero">homeHero</a></li><li><a href="global.html#leftPosition">leftPosition</a></li><li><a href="global.html#lukeSkywalker">lukeSkywalker</a></li><li><a href="global.html#lukeSkywalkerAttackForce">lukeSkywalkerAttackForce</a></li><li><a href="global.html#lukeSkywalkerJPG">lukeSkywalkerJPG</a></li><li><a href="global.html#lukeSkywalkerLifeForce">lukeSkywalkerLifeForce</a></li><li><a href="global.html#onContact">onContact</a></li><li><a href="global.html#parsePX">parsePX</a></li><li><a href="global.html#parseS">parseS</a></li><li><a href="global.html#pauseAudio">pauseAudio</a></li><li><a href="global.html#pickNextVillain">pickNextVillain</a></li><li><a href="global.html#playAudio">playAudio</a></li><li><a href="global.html#refreshHeroVillainCoordinates">refreshHeroVillainCoordinates</a></li><li><a href="global.html#relocateVillain">relocateVillain</a></li><li><a href="global.html#resetGameVariables">resetGameVariables</a></li><li><a href="global.html#startCount">startCount</a></li><li><a href="global.html#startGameTimer">startGameTimer</a></li><li><a href="global.html#stopGameTimer">stopGameTimer</a></li><li><a href="global.html#testLiteral">testLiteral</a></li><li><a href="global.html#testObjectChooseHero">testObjectChooseHero</a></li><li><a href="global.html#timerID">timerID</a></li><li><a href="global.html#topPosition">topPosition</a></li><li><a href="global.html#universeSaved">universeSaved</a></li><li><a href="global.html#universeSavedInstruction">universeSavedInstruction</a></li><li><a href="global.html#updateScoreBoard">updateScoreBoard</a></li><li><a href="global.html#villain">villain</a></li><li><a href="global.html#villainAttackForce">villainAttackForce</a></li><li><a href="global.html#villainBottom">villainBottom</a></li><li><a href="global.html#villainDeadCount">villainDeadCount</a></li><li><a href="global.html#villainLeft">villainLeft</a></li><li><a href="global.html#villainLifeForce">villainLifeForce</a></li><li><a href="global.html#villainLifeForceStart">villainLifeForceStart</a></li><li><a href="global.html#villainName">villainName</a></li><li><a href="global.html#villainRight">villainRight</a></li><li><a href="global.html#villainScoreId">villainScoreId</a></li><li><a href="global.html#villainStatus">villainStatus</a></li><li><a href="global.html#villainTop">villainTop</a></li><li><a href="global.html#yoda">yoda</a></li><li><a href="global.html#yodaAttackForce">yodaAttackForce</a></li><li><a href="global.html#yodaJPG">yodaJPG</a></li><li><a href="global.html#yodaLifeForce">yodaLifeForce</a></li></ul>
+    <h2><a href="index.html">Star Wars Game</a></h2><h3>Externals</h3><ul><li><a href="external-jQuery.html">jQuery</a></li></ul><h3>Global</h3><ul><li><a href="global.html#$">$</a></li><li><a href="global.html#allIsLost">allIsLost</a></li><li><a href="global.html#allIsLostInstruction">allIsLostInstruction</a></li><li><a href="global.html#animateCSS">animateCSS</a></li><li><a href="global.html#benObiwan">benObiwan</a></li><li><a href="global.html#benObiwanAttackForce">benObiwanAttackForce</a></li><li><a href="global.html#benObiwanJPG">benObiwanJPG</a></li><li><a href="global.html#benObiwanLifeForce">benObiwanLifeForce</a></li><li><a href="global.html#blankOutHeroChoice">blankOutHeroChoice</a></li><li><a href="global.html#blankOutVillainChoice">blankOutVillainChoice</a></li><li><a href="global.html#chooseHero">chooseHero</a></li><li><a href="global.html#chooseHeroInstructions">chooseHeroInstructions</a></li><li><a href="global.html#chooseVillain">chooseVillain</a></li><li><a href="global.html#chosenHero">chosenHero</a></li><li><a href="global.html#constructor">constructor</a></li><li><a href="global.html#contact">contact</a></li><li><a href="global.html#darthMaul">darthMaul</a></li><li><a href="global.html#darthMaulAttackForce">darthMaulAttackForce</a></li><li><a href="global.html#darthMaulChosen">darthMaulChosen</a></li><li><a href="global.html#darthMaulJPG">darthMaulJPG</a></li><li><a href="global.html#darthMaulLifeForce">darthMaulLifeForce</a></li><li><a href="global.html#darthSidious">darthSidious</a></li><li><a href="global.html#darthSidiousAttackForce">darthSidiousAttackForce</a></li><li><a href="global.html#darthSidiousChosen">darthSidiousChosen</a></li><li><a href="global.html#darthSidiousJPG">darthSidiousJPG</a></li><li><a href="global.html#darthSidiousLifeForce">darthSidiousLifeForce</a></li><li><a href="global.html#darthVader">darthVader</a></li><li><a href="global.html#darthVaderAttackForce">darthVaderAttackForce</a></li><li><a href="global.html#darthVaderChosen">darthVaderChosen</a></li><li><a href="global.html#darthVaderJPG">darthVaderJPG</a></li><li><a href="global.html#darthVaderLifeForce">darthVaderLifeForce</a></li><li><a href="global.html#doBattle">doBattle</a></li><li><a href="global.html#endGame">endGame</a></li><li><a href="global.html#endHero">endHero</a></li><li><a href="global.html#endVillain">endVillain</a></li><li><a href="global.html#gameAudio">gameAudio</a></li><li><a href="global.html#gameClues">gameClues</a></li><li><a href="global.html#gameHelp">gameHelp</a></li><li><a href="global.html#gameInstructions">gameInstructions</a></li><li><a href="global.html#gameOn">gameOn</a></li><li><a href="global.html#gameReady">gameReady</a></li><li><a href="global.html#gameScore">gameScore</a></li><li><a href="global.html#gameSpace">gameSpace</a></li><li><a href="global.html#gameSpaceHeight">gameSpaceHeight</a></li><li><a href="global.html#gameSpacePadding">gameSpacePadding</a></li><li><a href="global.html#gameSpaceWidth">gameSpaceWidth</a></li><li><a href="global.html#gameStartScore">gameStartScore</a></li><li><a href="global.html#gameStatus">gameStatus</a></li><li><a href="global.html#handleMoves">handleMoves</a></li><li><a href="global.html#hero">hero</a></li><li><a href="global.html#heroAttackForce">heroAttackForce</a></li><li><a href="global.html#heroAttackForceStart">heroAttackForceStart</a></li><li><a href="global.html#heroBottom">heroBottom</a></li><li><a href="global.html#heroLeft">heroLeft</a></li><li><a href="global.html#heroLifeForce">heroLifeForce</a></li><li><a href="global.html#heroName">heroName</a></li><li><a href="global.html#heroRight">heroRight</a></li><li><a href="global.html#heroScoreId">heroScoreId</a></li><li><a href="global.html#heroStatus">heroStatus</a></li><li><a href="global.html#heroStatusLabel">heroStatusLabel</a></li><li><a href="global.html#heroStatusLabelContent">heroStatusLabelContent</a></li><li><a href="global.html#heroTop">heroTop</a></li><li><a href="global.html#homeHero">homeHero</a></li><li><a href="global.html#leftPosition">leftPosition</a></li><li><a href="global.html#lukeSkywalker">lukeSkywalker</a></li><li><a href="global.html#lukeSkywalkerAttackForce">lukeSkywalkerAttackForce</a></li><li><a href="global.html#lukeSkywalkerJPG">lukeSkywalkerJPG</a></li><li><a href="global.html#lukeSkywalkerLifeForce">lukeSkywalkerLifeForce</a></li><li><a href="global.html#lukeSkywalkerObj">lukeSkywalkerObj</a></li><li><a href="global.html#onContact">onContact</a></li><li><a href="global.html#parsePX">parsePX</a></li><li><a href="global.html#parseS">parseS</a></li><li><a href="global.html#pauseAudio">pauseAudio</a></li><li><a href="global.html#pickNextVillain">pickNextVillain</a></li><li><a href="global.html#playAudio">playAudio</a></li><li><a href="global.html#preGame">preGame</a></li><li><a href="global.html#refreshHeroVillainCoordinates">refreshHeroVillainCoordinates</a></li><li><a href="global.html#relocateVillain">relocateVillain</a></li><li><a href="global.html#resetGameVariables">resetGameVariables</a></li><li><a href="global.html#setBattleBackGround">setBattleBackGround</a></li><li><a href="global.html#startCount">startCount</a></li><li><a href="global.html#startGameTimer">startGameTimer</a></li><li><a href="global.html#stopGameTimer">stopGameTimer</a></li><li><a href="global.html#testLiteral">testLiteral</a></li><li><a href="global.html#testObjectChooseHero">testObjectChooseHero</a></li><li><a href="global.html#timerID">timerID</a></li><li><a href="global.html#top">top</a></li><li><a href="global.html#topPosition">topPosition</a></li><li><a href="global.html#universeSaved">universeSaved</a></li><li><a href="global.html#universeSavedInstruction">universeSavedInstruction</a></li><li><a href="global.html#updateScoreBoard">updateScoreBoard</a></li><li><a href="global.html#villain">villain</a></li><li><a href="global.html#villainAttackForce">villainAttackForce</a></li><li><a href="global.html#villainBottom">villainBottom</a></li><li><a href="global.html#villainDeadCount">villainDeadCount</a></li><li><a href="global.html#villainLeft">villainLeft</a></li><li><a href="global.html#villainLifeForce">villainLifeForce</a></li><li><a href="global.html#villainLifeForceStart">villainLifeForceStart</a></li><li><a href="global.html#villainName">villainName</a></li><li><a href="global.html#villainRight">villainRight</a></li><li><a href="global.html#villainScoreId">villainScoreId</a></li><li><a href="global.html#villainStatus">villainStatus</a></li><li><a href="global.html#villainTop">villainTop</a></li><li><a href="global.html#yoda">yoda</a></li><li><a href="global.html#yodaAttackForce">yodaAttackForce</a></li><li><a href="global.html#yodaJPG">yodaJPG</a></li><li><a href="global.html#yodaLifeForce">yodaLifeForce</a></li></ul>
 </nav>
 
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.3</a> on Wed Feb 19 2020 11:03:20 GMT-0600 (Central Standard Time)
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.3</a> on Thu Feb 20 2020 11:15:34 GMT-0600 (Central Standard Time)
 </footer>
 
 <script> prettyPrint(); </script>

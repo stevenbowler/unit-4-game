@@ -2,17 +2,22 @@
 
 $(document).ready(function () {
 
-
+    /**
+     * Marker for program top, 1st keystroke calls {@link preGame}, 2nd keystroke calls {@link doBattle}, then all call {@link heroMove}
+     * @function top
+     */
+    const top = () => { }
     /**
      * Main entrance point for the entire program
-     * @function $(document).keyup
-     * @param {object} e
+     * @function  $(document).keyup
+     * @param {object} e event object for keyup events, main driver for program
      */
     $(document).keyup(function (e) {
         if (startCount == 0) {      // User launches game with first keystroke
             startCount++;           // After that all keystrokes move the hero div element
-            playAudio();
-            loadPrepGame();
+            playAudio("StarWarsTheme");
+            preGame();
+            updateScoreBoard();
             console.log(gameSpaceWidth, gameSpacePadding);
             return;
         }
@@ -108,8 +113,11 @@ $(document).ready(function () {
 
 });
 
-
-const loadPrepGame = () => {
+/**
+ * Called from document.onkeyup on first keystroke {@link top}
+ * @function preGame
+ */
+const preGame = () => {
     console.log("loadStartGame");
     heroLifeForce = 500;
     villainLifeForce = 500;
@@ -178,12 +186,13 @@ var testObjectChooseHero = {
 }
 
 /**
- * Called from first keystroke after page load
+ * Called from {@link preGame}, displays 3 hero images with onClick to choose hero, then {@link blankOutHeroChoice}
+ * @function chooseHero
  */
 const chooseHero = () => {
-    // testLiteral("lukeSkywalker");
-    // add luke skywalker photo and onclick selection
-    // lukeSkywalker.add("id", "lukeSkywalker");
+
+    // lukeSkywalkerObj.display();   // will require WarriorHero class working can't get selector working
+
     lukeSkywalker
         .css({ display: "block" })
         .addClass("heroChoice")
@@ -243,7 +252,10 @@ const chooseHero = () => {
 
 }
 
-
+/**
+ * Called from {@link chooseHero} removes hero images from display, then calls {@link chooseVillain}
+ * @function blankOutHeroChoice
+ */
 const blankOutHeroChoice = () => {
     animateCSS("#lukeSkywalker", "zoomOutRight", function () {
         lukeSkywalker.empty();
@@ -276,7 +288,11 @@ const blankOutHeroChoice = () => {
 // hero.css({ display: "block" });
 //$(".hero").effect("explode", "slow"); //works
 
-
+/**
+ * Called from {@link blankOutHeroChoice}, display villain choices, select villain if not previously chosen, 
+ *      then {@link blankOutVillainChoice}
+ * @function chooseVillain
+ */
 const chooseVillain = () => {
     //if (heroName === "") return;  // if hero not chosen yet return
     console.log("chooseVillain");
@@ -343,7 +359,9 @@ const chooseVillain = () => {
     }
 }
 
-
+/**
+ * Called from {@link chooseVillain}, remove all villains displayed, set {@link gameReady} = true
+ */
 const blankOutVillainChoice = () => {
     if (!darthMaulChosen) {
         animateCSS("#darthMaul", "zoomOutRight", function () {
@@ -373,32 +391,45 @@ const blankOutVillainChoice = () => {
     villain.css("top", "0px");
     villain.css("left", (gameSpaceWidth - villain.width()) + "px");
     villain.css({ display: "inline" });
+    updateScoreBoard();
     gameReady = true;
 }
 
+
+/**
+ * called from {@link top} main key event from game load and ready or from {@link pickNextVillain} for each next round
+ * @function doBattle
+ */
 const doBattle = () => {
     console.log("doBattle");
     updateScoreBoard();
-    setBattleBackGround();
+    setBattleBackGround("sunSet");
     relocateVillain();
     resetGameVariables();
     startGameTimer();
 }
 
-const setBattleBackGround = () => {
-    console.log("changeBackGround");
+
+/**
+ * called from various points in program to reset the background image
+ * @function setBattleBackGround
+ * @param {string} imageText
+ */
+const setBattleBackGround = (imageText) => {
+    console.log("changeBackGround", "imageText: ", imageText);
     if (villainDeadCount >= 1) return;  // don't reset music and background between villain rounds (if game in progress)
+    if (imageText == "") imageText = "space";
     gameSpace.css({
-        background: "url(../unit-4-game/assets/img/sunSet.gif) no-repeat",
+        background: "url(../unit-4-game/assets/img/" + imageText + ".gif) no-repeat",
         backgroundSize: "100% 100%"
     });
-    gameAudio.src = "./assets/audio/DuellingFates.mp3";
-    playAudio();
+    //gameAudio.src = "./assets/audio/DuellingFates.mp3";
+    playAudio("DuellingFates");
 }
 
 
 /**
- * called from doBattle at end of each round
+ * called from {@link doBattle} at end of each round
  * @function resetGameVariables
  */
 const resetGameVariables = () => {
@@ -413,7 +444,7 @@ const resetGameVariables = () => {
 var timerID = "";
 
 /**
- * set game timer calls handleMoves to react to current conditions/coordinates of hero and villain
+ * Called from {@link doBattle} to set game timer then calls {@link handleMoves} to react to current conditions/coordinates of hero and villain
  * @function startGameTimer
  */
 const startGameTimer = () => {
@@ -424,7 +455,8 @@ const startGameTimer = () => {
 }
 
 /**
- * called from end??? to turn off game timer when each round of the game
+ * called from {@link onContact} if either {@link heroLifeForce} or {@link villainLifeForce} < 0 
+ *      turn off game timer when each round of the game
  * @function stopGameTimer
  */
 const stopGameTimer = () => {
@@ -432,8 +464,8 @@ const stopGameTimer = () => {
 }
 
 /**
- * Each time there is a move need to check if contact, 
- *     then update scores and game status: win, lose, stillOn relocateVillain.
+ * Called from {@link startGameTimer} Each time there is a move need to check if contact, 
+ *     then update scores and game status: win, lose, gameOn still then relocateVillain.
  * @function handleMoves
  */
 const handleMoves = () => {
@@ -444,9 +476,8 @@ const handleMoves = () => {
 
 
 /**
- * called from game timer, update life forces, updateScoreBoard
+ * called from {@link handleMoves} game timer, update life forces, updateScoreBoard
  * @function onContact
- * 
  */
 const onContact = () => {
     villainLifeForce = villainLifeForce - heroAttackForce;
@@ -460,7 +491,7 @@ const onContact = () => {
 
 
 /**
- * determines if there was contact between hero and villain
+ * determines if there was contact between hero and villain, called from {@link onContact}
  * @function contact
  * @returns {boolean}
  */
@@ -478,7 +509,7 @@ const contact = () => {
 
 
 /**
- * Called from contact boolean function to set latest positions of hero and villain for contact/overlap condition
+ * Called from {@link contact} boolean function to set latest positions of hero and villain for contact/overlap condition
  * @function refreshHeroVillainCoordinates
  */
 const refreshHeroVillainCoordinates = () => {
@@ -494,7 +525,8 @@ const refreshHeroVillainCoordinates = () => {
 
 
 /**
- * update the hero & villain progress bars
+ * update the hero & villain progress bars, 
+ * called from {@link onContact} {@link resetGameVariables} {@link blankOutVillain} {@link doBattle}
  * @function updateScoreBoard
  */
 const updateScoreBoard = () => {
@@ -504,11 +536,13 @@ const updateScoreBoard = () => {
     heroScoreId.style.width = Math.round(heroLifeForce / 5).toString() + "%";
     villainScoreId.innerHTML = villainLifeForce.toString();
     villainScoreId.style.width = Math.round(villainLifeForce / 5).toString() + "%";
+    heroStatusLabelContent = "Hero Life Force " + `${gameOn ? 'below, Attack force: ' : ''}` + `${gameOn ? heroAttackForce : ''}`;
+    heroStatusLabel.html(heroStatusLabelContent);
 }
 
 
 /** 
- * Sends hero to home position while selecting next villain called from onContact when villainLifeForce < 0
+ * Sends hero to home position while selecting next villain called from {@link onContact} when villainLifeForce < 0
  * @function homeHero
  * */
 const homeHero = () => {
@@ -518,7 +552,7 @@ const homeHero = () => {
 
 
 /**
- * called from onContact when villainLifeForce <= 0
+ * called from {@link onContact} when villainLifeForce <= 0
  * @function endVillain
  */
 const endVillain = () => {
@@ -532,7 +566,7 @@ const endVillain = () => {
 
 
 /**
- * called from endVillain when at least one of the 3 villains has not been terminated yet
+ * called from {@link endVillain} when at least one of the 3 villains has not been terminated yet
  * @function pickNextVillain
  */
 const pickNextVillain = () => {
@@ -543,7 +577,7 @@ const pickNextVillain = () => {
 
 
 /**  random number from 16 to 59     
- * called from startGame or pickNextVillain or onContact when villain hit by hero
+ * called from {@link startGame} or {@link pickNextVillain} or {@link onContact} when villain hit by hero
  * @function relocateVillain
  */
 const relocateVillain = () => {
@@ -556,16 +590,17 @@ const relocateVillain = () => {
 }
 
 /**
- * Called from onContact when hero life force <= 0 or when 3rd villain lifeForce <= 0
+ * Called from {@link onContact} when hero life force <= 0 or when 3rd villain lifeForce <= 0
  */
 const endHero = () => {
     console.log("endHero");
+    villain.css({ display: "none" });
     endGame();
 }
 
 
 /**
- * called from either endVillain or endHero to end the game
+ * called from either {@link endVillain} or {@link endHero} to end the game
  * @function endGame
  */
 const endGame = () => {
@@ -575,6 +610,7 @@ const endGame = () => {
     gameReady = false;
     hero.css({ display: "none" });
     villain.css({ display: "none" });
+    if (villainDeadCount < 3) blankOutVillainChoice();
     hero.empty();
     villain.empty();
     darthMaulChosen = false;
@@ -587,15 +623,16 @@ const endGame = () => {
 
 
 /**
- * End of game when hero wins, called from endGame
+ * Called from {@link endGame} when hero wins with {@link heroLifeForce} positive
  * @function universeSaved
  */
 const universeSaved = () => {
     console.log("universeSaved");
-    gameSpace.css({
-        background: "url(../unit-4-game/assets/img/lonelySpace.gif) no-repeat",
-        backgroundSize: "100% 100%"
-    });
+    setBattleBackGround("lonelySpace");
+    // gameSpace.css({
+    //     background: "url(../unit-4-game/assets/img/lonelySpace.gif) no-repeat",
+    //     backgroundSize: "100% 100%"
+    // });
 
     animateCSS("#gameStatus", "zoomOutLeft");
     gameStatus.css({ display: "none" });
@@ -604,21 +641,22 @@ const universeSaved = () => {
         animateCSS('#gameClues', 'zoomInLeft');
     });
 
-    gameAudio.src = "./assets/audio/AnakinsSymphony.mp3";
-    playAudio();
+    //gameAudio.src = "./assets/audio/AnakinsSymphony.mp3";
+    playAudio("AnakinsSymphony");
 }
 
 
 /**
- * End of game when villain wins, called from endVillain endGame
+ * Called from {@link endGame} when villain wins, when {@link heroLifeForce} < 0
  * @function allIsLost
  */
 const allIsLost = () => {
     console.log("allIsLost");
-    gameSpace.css({
-        background: "url(../unit-4-game/assets/img/sun.gif) no-repeat",
-        backgroundSize: "100% 100%"
-    });
+    setBattleBackGround("sun");
+    // gameSpace.css({
+    //     background: "url(../unit-4-game/assets/img/sun.gif) no-repeat",
+    //     backgroundSize: "100% 100%"
+    // });
 
     animateCSS("#gameStatus", "zoomOutLeft");
     gameStatus.css({ display: "none" });
@@ -627,8 +665,7 @@ const allIsLost = () => {
         animateCSS('#gameClues', 'zoomInLeft');
     });
 
-    gameAudio.src = "./assets/audio/Evil.mp3";
-    playAudio();
+    playAudio("Evil");
 }
 
 
@@ -636,8 +673,10 @@ const allIsLost = () => {
 /** 
  * Called from restart() or from play music button on home screen
  * @function playAudio
+ * @param {string} songTitle if null then just play existing, string is name of .mp3 file without extension
  */
-const playAudio = () => {
+const playAudio = (songTitle) => {
+    if (songTitle !== "") gameAudio.src = "./assets/audio/" + songTitle + ".mp3";
     gameAudio.play();
 }
 
