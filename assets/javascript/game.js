@@ -83,45 +83,35 @@ $(document).ready(function () {
         }
         switch (direction) {  // otherwise move the hero
             case "up": {
-                hero.animate({ top: offsetPX }, {
-                    duration: 1000,
-                    specialEasing: {
-                        top: "easeOutBounce"
-                    }
-                }); break;
+                hero.animate({ top: offsetPX }, 600, "linear"); break;
             }
             case "down": {
-                hero.animate({ top: offsetPX }, {
-                    duration: 1000,
-                    specialEasing: {
-                        top: "easeOutBounce"
-                    }
-                }); break;
+                hero.animate({ top: offsetPX }, 600, "linear"); break;
             }
             case "left": {
-                hero.animate({ left: offsetPX }, {
-                    duration: 1000,
-                    specialEasing: {
-                        top: "easeOutBounce"
-                    }
-                }); break;
+                hero.animate({ left: offsetPX }, 600, "linear"); break;
             }
             case "right": {
-                hero.animate({ left: offsetPX }, {
-                    duration: 1000,
-                    specialEasing: {
-                        top: "easeOutBounce"
-                    }
-                }); break;
+                hero.animate({ left: offsetPX }, 600, "linear"); break;
             }
         }
     }
 
-    //     , {
-    //         duration: 5000,
+    $("p").animate({
+        opacity: "show"
+    }, {
+        duration: "slow",
+        easing: "easein"
+    });
+
+    // below worked locally, not on GitHub
+    // case "left": {
+    //     hero.animate({ left: offsetPX }, {
+    //         duration: 1000,
     //         specialEasing: {
-    //             width: "linear",
-    //             height: "easeOutBounce"
+    //             left: "easeOutBounce"
+    //         }
+    //     }); break;
     // }
 
     /**  
