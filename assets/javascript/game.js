@@ -155,8 +155,8 @@ const testLiteral = (jqueryElement, player) => {
 
 
 /**
- * 
- * @type {object} 
+ * This is just another failed test of OOP
+ * @type {object}
  */
 var testObjectChooseHero = {
     name: String,
@@ -191,7 +191,7 @@ var testObjectChooseHero = {
  */
 const chooseHero = () => {
 
-    // lukeSkywalkerObj.display();   // will require WarriorHero class working can't get selector working
+    //   lukeSkywalkerObj.display();   // will require WarriorHero class working can't get selector working
 
     lukeSkywalker
         .css({ display: "block" })
@@ -409,6 +409,14 @@ const doBattle = () => {
     startGameTimer();
 }
 
+// animateCSS("#gameClues", "zoomOutLeft", function () {
+//     gameSpace.css({
+//         background: "url(../unit-4-game/assets/img/" + imageText + ".gif) no-repeat",
+//         backgroundSize: "100% 100%"
+//     });
+//     animateCSS('#gameClues', 'zoomInLeft');
+// });
+
 
 /**
  * called from various points in program to reset the background image
@@ -419,10 +427,13 @@ const setBattleBackGround = (imageText) => {
     console.log("changeBackGround", "imageText: ", imageText);
     if (villainDeadCount >= 1) return;  // don't reset music and background between villain rounds (if game in progress)
     if (imageText == "") imageText = "space";
+    // animateCSS("#gameSpace", "zoomOutLeft", function () {
     gameSpace.css({
         background: "url(../unit-4-game/assets/img/" + imageText + ".gif) no-repeat",
         backgroundSize: "100% 100%"
     });
+    //     animateCSS('#gameSpace', 'zoomInLeft');
+    // });
     //gameAudio.src = "./assets/audio/DuellingFates.mp3";
     playAudio("DuellingFates");
 }
@@ -676,6 +687,7 @@ const allIsLost = () => {
  * @param {string} songTitle if null then just play existing, string is name of .mp3 file without extension
  */
 const playAudio = (songTitle) => {
+    console.log("songTitle: ", songTitle);
     if (songTitle !== "") gameAudio.src = "./assets/audio/" + songTitle + ".mp3";
     gameAudio.play();
 }

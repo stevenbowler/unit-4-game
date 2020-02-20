@@ -1,5 +1,5 @@
 // @ts-check
-
+//const lukeSkywalker = $("<div id=lukeSkywalker>");
 /**
  * THIS IS STILL A TEST OF OOP, SET A CLASS TO ELIMINATE REPETITION IN {@link chooseHero}
  * later will be applied to {@link chooseVillain}
@@ -8,24 +8,24 @@
  * @param {JQuery} selector
  */
 class WarriorHero {
-    constructor(selector, name, div, jpg, lifeForce, attackForce) {
-        this.selector = selector;
+    constructor(name, div, jpg, lifeForce, attackForce) {
         this.name = name;
         this.div = div;
         this.jpg = jpg;
-        this.lifeforce = lifeForce;
+        this.lifeForce = lifeForce;
         this.attackForce = attackForce;
+        this.selector = $("<div id=" + this.name + ">");
     }
 
     display() {
-        lukeSkywalker
+        this.selector
             .css({ display: "block" })
             .addClass("heroChoice")
             .html(lukeSkywalkerJPG + "Life Force: " + lukeSkywalkerLifeForce + "<br>Attack Force: " + lukeSkywalkerAttackForce);
         // lukeSkywalker.html(lukeSkywalkerJPG);
         gameSpace.append(this.selector);
         animateCSS("#lukeSkywalker", "zoomInRight");
-        $('#lukeSkywalker').on("click", function () {
+        this.selector.on("click", function () {
             console.log(this.name + " chosen");
             hero
                 .html(this.jpg)
@@ -41,15 +41,15 @@ class WarriorHero {
 
 
 /**
- * 
+ * @const lukeSkywalkerObj
+ * @type {object}
  */
 const lukeSkywalkerObj = new WarriorHero({
-    selector: $("<div id=lukeSkywalker>"),
     name: "lukeSkywalker",
     div: "<div id='hero'>",
     jpg: '<img src="./assets/img/lukeSkywalker.jpg" height=100% width=100%>',
     lifeForce: Number(Math.round(Math.random() * 100 + 400)),
-    attackForce: 300
+    attackForce: 30
 });
 
 
