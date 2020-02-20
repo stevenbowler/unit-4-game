@@ -320,6 +320,7 @@ $(document).ready(function () {
     const chooseVillain = () => {
         //if (heroName === "") return;  // if hero not chosen yet return
         console.log("chooseVillain");
+        if (villainDeadCount == 0) { darthMaulChosen = false; darthSidiousChosen = false; darthVaderChosen = false }
 
         if (!darthMaulChosen) {
             darthMaul.addClass("villainChoice");
