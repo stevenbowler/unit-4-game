@@ -97,12 +97,12 @@ $(document).ready(function () {
         }
     }
 
-    $("p").animate({
-        opacity: "show"
-    }, {
-        duration: "slow",
-        easing: "easein"
-    });
+    // $("p").animate({
+    //     opacity: "show"
+    // }, {
+    //     duration: "slow",
+    //     easing: "easein"
+    // });
 
     // below worked locally, not on GitHub
     // case "left": {
