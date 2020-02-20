@@ -30,26 +30,26 @@ $(document).ready(function () {
 
             // Move Buttons (Keyboard Down)
             case 40:
-                heroMove("down", "+=50px");
+                heroMove("down", "+=100px");
                 // hero.animate({ "top": "+=50px" }, "slow");
                 break;
 
             // Move Buttons (Keyboard Right)
             case 39:
-                heroMove("right", "+=50px");
+                heroMove("right", "+=100px");
                 // hero.animate({ left: "+=50px" }, "slow");
                 break;
 
             // Move Buttons (Keyboard Up)
             case 38:
-                heroMove("up", "-=50px");
+                heroMove("up", "-=100px");
                 // hero.animate({ top: "-=50px" }, "slow");
                 break;
 
             // Move Buttons (Keyboard Left)
             case 37:
                 // hero.animate({ left: "-=50px" }, "slow");
-                heroMove("left", "-=50px");
+                heroMove("left", "-=100px");
                 break;
 
             default:
@@ -82,32 +82,66 @@ $(document).ready(function () {
             case "right": if (parsePX(hero.css("left")) + hero.width() + offsetNumber >= gameSpaceWidth) { hero.css("top", gameSpaceWidth - hero.width()); return; } break;
         }
         switch (direction) {  // otherwise move the hero
-            case "up": hero.animate({ top: offsetPX }, "fast"); break;
-            case "down": hero.animate({ top: offsetPX }, "fast"); break;
-            case "left": hero.animate({ left: offsetPX }, "fast"); break;
-            case "right": hero.animate({ left: offsetPX }, "fast"); break;
+            case "up": {
+                hero.animate({ top: offsetPX }, {
+                    duration: 1000,
+                    specialEasing: {
+                        top: "easeOutBounce"
+                    }
+                }); break;
+            }
+            case "down": {
+                hero.animate({ top: offsetPX }, {
+                    duration: 1000,
+                    specialEasing: {
+                        top: "easeOutBounce"
+                    }
+                }); break;
+            }
+            case "left": {
+                hero.animate({ left: offsetPX }, {
+                    duration: 1000,
+                    specialEasing: {
+                        top: "easeOutBounce"
+                    }
+                }); break;
+            }
+            case "right": {
+                hero.animate({ left: offsetPX }, {
+                    duration: 1000,
+                    specialEasing: {
+                        top: "easeOutBounce"
+                    }
+                }); break;
+            }
         }
     }
 
+    //     , {
+    //         duration: 5000,
+    //         specialEasing: {
+    //             width: "linear",
+    //             height: "easeOutBounce"
+    // }
 
     /**  
      * Move Buttons do the same as the left/right/up/down keystrokes 
      * */
     $(".up-button").on("click", function () {
-        heroMove("up", "-=50px");
+        heroMove("up", "-=100px");
         // hero.animate({ top: "-=50px" }, "slow");
     });
     $(".down-button").on("click", function () {
-        heroMove("down", "+=50px");
+        heroMove("down", "+=100px");
         // hero.animate({ top: "+=50px" }, "slow");
 
     });
     $(".left-button").on("click", function () {
-        heroMove("left", "-=50px");
+        heroMove("left", "-=100px");
         // hero.animate({ left: "-=50px" }, "slow");
     });
     $(".right-button").on("click", function () {
-        heroMove("right", "+=50px");
+        heroMove("right", "+=100px");
         // hero.animate({ left: "+=50px" }, "slow");
     });
 
@@ -557,6 +591,7 @@ $(document).ready(function () {
      * @function homeHero
      * */
     const homeHero = () => {
+        animateCSS("#hero", "zoomOutLeft");
         hero.css("top", "0px");
         hero.css("left", "0px");
     }
@@ -568,7 +603,8 @@ $(document).ready(function () {
      */
     const endVillain = () => {
         homeHero();
-        villain.effect("explode", "slow");
+        animateCSS("#villain", "zoomOutLeft");
+        //        villain.effect("explode", "slow");
         villain.empty();
         ++villainDeadCount;
         if (villainDeadCount == 3) endGame();    // if all villains dead, end game
