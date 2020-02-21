@@ -241,10 +241,11 @@ var heroStatusLabelContent = "Hero Life Force below, Attack force" + `${gameOn ?
 /**
  * Alias for id=gameAudio getElement
  * @constant
- * @type {HTMLElement}
+ * @type {JQuery}
  * @default
  */
 const gameAudio = document.getElementById("gameAudio");
+//const gameAudio = $("#gameAudio");
 
 /**
  * Hero div for game alias for JQuery Selector

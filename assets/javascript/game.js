@@ -15,7 +15,8 @@ $(document).ready(function () {
     $(document).keyup(function (e) {
         if (startCount == 0) {      // User launches game with first keystroke
             startCount++;           // After that all keystrokes move the hero div element
-            playAudio("StarWarsTheme");
+            gameAudio.src = "./assets/audio/StarWarsTheme.mp3";
+            playAudio();
             preGame();
             updateScoreBoard();
             console.log(gameSpaceWidth, gameSpacePadding);
@@ -390,21 +391,27 @@ $(document).ready(function () {
     const blankOutVillainChoice = () => {
         if (!darthMaulChosen) {
             animateCSS("#darthMaul", "zoomOutRight", function () {
-                darthMaul.empty();
-                darthMaul.css({ display: "none" });
+                darthMaul
+                    .empty()
+                    .css({ display: "none" })
+                    .removeClass("villainChoice");
             });
         }
 
         if (!darthSidiousChosen) {
             animateCSS("#darthSidious", "zoomOutRight", function () {
-                darthSidious.empty();
-                darthSidious.css({ display: "none" });
+                darthSidious
+                    .empty()
+                    .css({ display: "none" })
+                    .removeClass("villainChoice");
             });
         }
         if (!darthVaderChosen) {
             animateCSS("#darthVader", "zoomOutRight", function () {
-                darthVader.empty();
-                darthVader.css({ display: "none" });
+                darthVader
+                    .empty()
+                    .css({ display: "none" })
+                    .removeClass("villainChoice");
             });
         }
 
@@ -413,9 +420,10 @@ $(document).ready(function () {
             villain.addClass("villain");
             gameSpace.append(villain);
         }
-        villain.css("top", "0px");
-        villain.css("left", (gameSpaceWidth - villain.width()) + "px");
-        villain.css({ display: "inline" });
+        villain
+            .css("top", "0px")
+            .css("left", (gameSpaceWidth - villain.width()) + "px")
+            .css({ display: "inline" });
         updateScoreBoard();
         gameReady = true;
     }
@@ -459,8 +467,8 @@ $(document).ready(function () {
         });
         //     animateCSS('#gameSpace', 'zoomInLeft');
         // });
-        //gameAudio.src = "./assets/audio/DuellingFates.mp3";
-        playAudio("DuellingFates");
+        gameAudio.src = "./assets/audio/DuellingFates.mp3";
+        playAudio();
     }
 
 
@@ -475,8 +483,8 @@ $(document).ready(function () {
 
 
     /** 
-    * @type {*}
-    */
+     * @type {*}
+     */
     var timerID = "";
 
     /**
@@ -494,7 +502,7 @@ $(document).ready(function () {
      * called from {@link onContact} if either {@link heroLifeForce} or {@link villainLifeForce} < 0 
      *      turn off game timer when each round of the game
      * @function stopGameTimer
-     */
+ */
     const stopGameTimer = () => {
         clearInterval(timerID);
     }
@@ -678,9 +686,9 @@ $(document).ready(function () {
             gameClues.html(universeSavedInstruction);
             animateCSS('#gameClues', 'zoomInLeft');
         });
-
-        //gameAudio.src = "./assets/audio/AnakinsSymphony.mp3";
-        playAudio("AnakinsSymphony");
+        //pauseAudio();
+        gameAudio.src = "./assets/audio/AnakinsSymphony.mp3";
+        playAudio();
     }
 
 
@@ -702,10 +710,83 @@ $(document).ready(function () {
             gameClues.html(allIsLostInstruction);
             animateCSS('#gameClues', 'zoomInLeft');
         });
-
-        playAudio("Evil");
+        // pauseAudio();
+        // gameAudio.src = "./assets/audio/Evil.mp3";
+        $("#gameAudio").attr("src", "./assets/audio/Evil.mp3");
+        // $("#gameAudio").play();
+        // testLoad();
+        // testAudio();
+        playAudio();
     }
 
+
+    function testLoad() {
+        var playPromise = gameAudio.src = "./assets/audio/Evil.mp3";
+
+        if (playPromise !== undefined) {
+            playPromise.then(_ => {
+                // Automatic playback started!
+                // Show playing UI.
+                console.log('KEPT promise testAudio game audio');
+            })
+                .catch(error => {
+                    // Auto-play was prevented
+                    // Show paused UI.
+                    console.log('IGNORED promise, testAudio game audio');
+                });
+        }
+    }
+
+
+
+    // Show loading animation.
+    /**
+     * test audio function with promise error handling, works ok
+     * @function testAudio
+     */
+    function playAudio() {
+        var playPromise = gameAudio.play();
+
+        if (playPromise !== undefined) {
+            playPromise.then(_ => {
+                console.log('KEPT promise testAudio game audio');
+            })
+                .catch(error => {
+                    villainDeadCount = 0;
+                    // darthSidious.css({ display: "inline" });
+                    // darthVader.css({ display: "inline" });
+                    // darthMaul.css({ display: "inline" });
+                    console.log('IGNORED promise, testAudio game audio');
+                });
+        }
+    }
+
+
+
+    // function testAudio1() {
+    //     // This will allow us to play video later...
+    //     gameAudio.load();
+    //     fetchVideoAndPlay();
+    // }
+
+    // function fetchVideoAndPlay() {
+    //     fetch("./assets/audio/Evil.mp3")
+    //         .then(response => response.blob())
+    //         .then(blob => {
+    //             gameAudio.srcObject = blob;
+    //             return gameAudio.play();
+    //         })
+    //         .then(_ => {
+    //             console.log("playing from testAudio");
+    //             // Video playback started ;)
+    //         })
+    //         .catch(e => {
+    //             villainDeadCount = 0;
+    //             darthVaderChosen = false;
+    //             darthSidiousChosen = false;
+    //             darthMaulChosen = false;
+    //         })
+    // }
 
 
     /** 
@@ -713,11 +794,14 @@ $(document).ready(function () {
      * @function playAudio
      * @param {string} songTitle if null then just play existing, string is name of .mp3 file without extension
      */
-    const playAudio = (songTitle) => {
-        console.log("songTitle: ", songTitle);
-        if (songTitle !== "") gameAudio.src = "./assets/audio/" + songTitle + ".mp3";
-        gameAudio.play();
-    }
+    // const playAudio = () => {
+    //     // console.log("songTitle: ", songTitle);
+    //     // if (songTitle !== "") gameAudio.src = "./assets/audio/" + songTitle + ".mp3";
+    //     gameAudio.play();
+    // }
+
+
+
 
     /** 
      * Called from pause music button on home screen
