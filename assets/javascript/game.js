@@ -320,29 +320,38 @@ $(document).ready(function () {
      */
     const chooseVillain = () => {
         //if (heroName === "") return;  // if hero not chosen yet return
-        console.log("chooseVillain");
-        if (villainDeadCount == 0) { darthMaulChosen = false; darthSidiousChosen = false; darthVaderChosen = false }
+        console.log("chooseVillain", "villainDeadCount: ", villainDeadCount, "darthVaderChosen: ", darthVader);
+        //if (villainDeadCount == 0) { darthMaulChosen = false; darthSidiousChosen = false; darthVaderChosen = false }
 
-        if (!darthMaulChosen) {
+        if (!darthMaulChosen && darthMaulCounter === 0) {
             darthMaul.addClass("villainChoice");
             darthMaul.css({ display: "inline" });
             // darthMaul.add("id", "darthMaul");
             darthMaul.html(darthMaulJPG + "Life Force: " + darthMaulLifeForce + "<br>Attack Force: " + darthMaulAttackForce);
             gameSpace.append(darthMaul);
-            animateCSS("#darthMaul", "zoomInRight");
-            $('#darthMaul').on("click", function () {
-                console.log("darthMaul chosen");
-                villain.html(darthMaulJPG);
-                villainName = "Darth Maul";
-                villainLifeForce = darthMaulLifeForce;
-                villainLifeForceStart = darthMaulLifeForce;
-                villainAttackForce = darthMaulAttackForce;
-                blankOutVillainChoice();
-                darthMaulChosen = true;
+            animateCSS("#darthMaul", "zoomInRight", function () {
+                $('#darthMaul').on("click", function () {
+                    console.log("darthMaul chosen");
+                    villain.html(darthMaulJPG);
+                    villainName = "Darth Maul";
+                    villainLifeForce = darthMaulLifeForce;
+                    villainLifeForceStart = darthMaulLifeForce;
+                    villainAttackForce = darthMaulAttackForce;
+                    blankOutVillainChoice();
+                    // animateCSS("#darthMaul", "zoomOutRight", function () {
+                    //     darthMaul
+                    //         .empty()
+                    //         .css({ display: "none" })
+                    //         .removeClass("villainChoice");
+                    // });
+                    darthMaulChosen = true;
+                    ++darthMaulCounter;
+                });
             });
+
         }
 
-        if (!darthSidiousChosen) {
+        if (!darthSidiousChosen && darthSidiousCounter === 0) {
             // add darthVader photo and onclick selection
             darthSidious.addClass("villainChoice");
             darthSidious.css({ display: "inline" });
@@ -350,20 +359,29 @@ $(document).ready(function () {
             darthSidious.html(darthSidiousJPG + "Life Force: " + darthSidiousLifeForce + "<br>Attack Force: " + darthSidiousAttackForce);
             // darthSidious.html(darthSidiousJPG);
             gameSpace.append(darthSidious);
-            animateCSS("#darthSidious", "zoomInRight");
-            $('#darthSidious').on("click", function () {
-                console.log("darthSidious chosen");
-                villain.html(darthSidiousJPG);
-                villainName = "Darth Sidious";
-                villainLifeForce = darthSidiousLifeForce;
-                villainLifeForceStart = darthSidiousLifeForce;
-                villainAttackForce = darthSidiousAttackForce;
-                blankOutVillainChoice();
-                darthSidiousChosen = true;
+            animateCSS("#darthSidious", "zoomInRight", function () {
+                $('#darthSidious').on("click", function () {
+                    console.log("darthSidious chosen");
+                    villain.html(darthSidiousJPG);
+                    villainName = "Darth Sidious";
+                    villainLifeForce = darthSidiousLifeForce;
+                    villainLifeForceStart = darthSidiousLifeForce;
+                    villainAttackForce = darthSidiousAttackForce;
+                    blankOutVillainChoice();
+                    // animateCSS("#darthSidious", "zoomOutRight", function () {
+                    //     darthSidious
+                    //         .empty()
+                    //         .css({ display: "none" })
+                    //         .removeClass("villainChoice");
+                    // });
+                    darthSidiousChosen = true;
+                    ++darthSidiousCounter;
+                });
             });
+
         }
 
-        if (!darthVaderChosen) {
+        if (!darthVaderChosen && darthVaderCounter === 0) {
             // add darthVader photo and onclick selection
             darthVader.addClass("villainChoice");
             darthVader.css({ display: "inline" });
@@ -371,17 +389,26 @@ $(document).ready(function () {
             // darthVader.html(darthVaderJPG);
             darthVader.html(darthVaderJPG + "Life Force: " + darthVaderLifeForce + "<br>Attack Force: " + darthVaderAttackForce);
             gameSpace.append(darthVader);
-            animateCSS("#darthVader", "zoomInRight");
-            $('#darthVader').on("click", function () {
-                console.log("darthVader chosen");
-                villain.html(darthVaderJPG);
-                villainName = "Darth Vader";
-                villainLifeForce = darthVaderLifeForce;
-                villainLifeForceStart = darthVaderLifeForce;
-                villainAttackForce = darthVaderAttackForce;
-                blankOutVillainChoice();
-                darthVaderChosen = true;
+            animateCSS("#darthVader", "zoomInRight", function () {
+                $('#darthVader').on("click", function () {
+                    console.log("darthVader chosen");
+                    villain.html(darthVaderJPG);
+                    villainName = "Darth Vader";
+                    villainLifeForce = darthVaderLifeForce;
+                    villainLifeForceStart = darthVaderLifeForce;
+                    villainAttackForce = darthVaderAttackForce;
+                    blankOutVillainChoice();
+                    // animateCSS("#darthVader", "zoomOutRight", function () {
+                    //     darthVader
+                    //         .empty()
+                    //         .css({ display: "none" })
+                    //         .removeClass("villainChoice");
+                    // });
+                    darthVaderChosen = true;
+                    ++darthVaderCounter;
+                });
             });
+
         }
     }
 
@@ -393,8 +420,8 @@ $(document).ready(function () {
             animateCSS("#darthMaul", "zoomOutRight", function () {
                 darthMaul
                     .empty()
-                    .css({ display: "none" })
-                    .removeClass("villainChoice");
+                    .css({ display: "none" });
+                // .removeClass("villainChoice");
             });
         }
 
@@ -402,16 +429,16 @@ $(document).ready(function () {
             animateCSS("#darthSidious", "zoomOutRight", function () {
                 darthSidious
                     .empty()
-                    .css({ display: "none" })
-                    .removeClass("villainChoice");
+                    .css({ display: "none" });
+                // .removeClass("villainChoice");
             });
         }
         if (!darthVaderChosen) {
             animateCSS("#darthVader", "zoomOutRight", function () {
                 darthVader
                     .empty()
-                    .css({ display: "none" })
-                    .removeClass("villainChoice");
+                    .css({ display: "none" });
+                // .removeClass("villainChoice");
             });
         }
 
@@ -525,9 +552,9 @@ $(document).ready(function () {
      */
     const onContact = () => {
         villainLifeForce = villainLifeForce - heroAttackForce;
-        if (villainLifeForce <= 0) { stopGameTimer(); homeHero(); endVillain(); }
-        else relocateVillain();
         heroLifeForce = heroLifeForce - villainAttackForce;
+        if (villainLifeForce <= 0 && heroLifeForce > 0) { stopGameTimer(); homeHero(); endVillain(); }
+        else relocateVillain();
         if (heroLifeForce <= 0) { stopGameTimer(); endHero(); }
         heroAttackForce = heroAttackForce + heroAttackForceStart;
         updateScoreBoard();
@@ -656,12 +683,15 @@ $(document).ready(function () {
         gameReady = false;
         hero.css({ display: "none" });
         villain.css({ display: "none" });
-        if (villainDeadCount < 3) blankOutVillainChoice();
+        if (villainDeadCount < 3) blankOutVillainChoice(); // when only 2 or 1 villains requred to win 
         hero.empty();
         villain.empty();
         darthMaulChosen = false;
         darthVaderChosen = false;
         darthSidiousChosen = false;
+        darthMaulCounter = 0;
+        darthSidiousCounter = 0;
+        darthVaderCounter = 0;
         villainDeadCount = 0;
         if (heroLifeForce > 0) universeSaved();
         else allIsLost();

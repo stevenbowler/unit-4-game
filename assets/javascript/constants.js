@@ -523,6 +523,12 @@ var darthVader = $("<div id=darthVader>");
 var darthVaderChosen = false;
 
 /**
+ * darthVader div for game {@link endGame}
+ * @type {number}
+ */
+var darthVaderCounter = 0;
+
+/**
  * Luke_Skywalker.jpg path
  * @type {string}
  * @default
@@ -557,6 +563,12 @@ var darthMaul = $("<div id=darthMaul>");
 var darthMaulChosen = false;
 
 /**
+ * darthMaul used to count to end async calls to chooseVillain {@link endGame}
+ * @type {number}
+ */
+var darthMaulCounter = 0;
+
+/**
  * Luke_Skywalker.jpg path
  * @type {string}
  * @default
@@ -589,6 +601,12 @@ var darthSidious = $("<div id=darthSidious>");
  * @type {boolean}
  */
 var darthSidiousChosen = false;
+
+/**
+ * darthSidious div for game {@link endGame}
+ * @type {number}
+ */
+var darthSidiousCounter = 0;
 
 /**
  * Luke_Skywalker.jpg path
