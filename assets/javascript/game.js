@@ -85,6 +85,7 @@ $(document).ready(function () {
      */
     const heroMove = (direction, offsetPX) => {
         var offsetNumber = parsePX(offsetPX.slice(2));
+        var halfOffSetPX = "+" + Number(offsetNumber / 2).toString() + "px";
         switch (direction) { // if try to move beyond gameSpace, set the player back in gameSpace
             case "up": if (parsePX(hero.css("top")) <= 0) { hero.css("top", 0); return; } break;
             case "down": if (parsePX(hero.css("top")) + hero.height() + offsetNumber > gameSpaceHeight) { hero.css("top", gameSpaceHeight - hero.height()); return; } break;
@@ -99,10 +100,26 @@ $(document).ready(function () {
                 hero.animate({ top: offsetPX }, 600, "linear"); break;
             }
             case "left": {
-                hero.animate({ left: offsetPX }, 600, "linear"); break;
+                hero.animate({ left: offsetPX }, {
+                    duration: 1000,
+                    specialEasing: {
+                        left: "easeOutBounce"
+                    }
+                }); break;
             }
+            // case "left": {
+            //             // hero.css("animation", "1000ms linear 0s 1 normal both running scale-easeInBounceLeft");  // animation trials without jquery easing
+            //             // hero.animate({ left: "-" + halfOffSetPX });
+            //             // hero.css("animation", "1000ms linear 0s 1 normal both running");
+            //             // break;
+            //             hero.animate({ left: offsetPX }, 600, "linear"); break;
+            //         }
             case "right": {
-                hero.animate({ left: offsetPX }, 600, "linear"); break;
+                hero.css("animation", "1000ms linear 0s 1 normal both running scale-easeInBounceRight");  // animation trials without jquery easing
+                hero.animate({ left: offsetPX });
+                hero.css("animation", "1000ms linear 0s 1 normal both running");
+                // hero.css("animation", "1000ms linear 0s 1 normal both running scale-easeInBounceRight"); // animation trials
+                // hero.animate({ left: offsetPX }, 600, "linear"); break;
             }
         }
     }
@@ -192,32 +209,32 @@ $(document).ready(function () {
      * This is just another failed test of OOP
      * @type {object}
      */
-    var testObjectChooseHero = {
-        name: String,
-        div: String,
-        JPG: String,
-        lifeForce: Number,
-        attackForce: Number,
-        load: function () {
-            this.addClass("heroChoice");
-            // lukeSkywalker.add("id", "lukeSkywalker");
-            // lukeSkywalker.html(lukeSkywalkerJPG);
-            this.html(this.JPG + "Life Force: " + this.lifeForce + "<br>Attack Force: " + this.attackForce);
-            gameSpace.append(this.div);
-            animateCSS("#lukeSkywalker", "zoomInRight");
-            $('#lukeSkywalker').on("click", function () {
-                console.log("lukeSkywalker chosen");
-                hero.html(this.JPG);
-                heroName = "Luke Skywalker";
-                heroLifeForce = this.lifeForce;
-                heroAttackForceStart = this.LifeForce;
-                heroAttackForce = this.AttackForce;
-                blankOutHeroChoice();
-            });
+    // var testObjectChooseHero = {
+    //     name: String,
+    //     div: String,
+    //     JPG: String,
+    //     lifeForce: Number,
+    //     attackForce: Number,
+    //     load: function () {
+    //         this.addClass("heroChoice");
+    //         // lukeSkywalker.add("id", "lukeSkywalker");
+    //         // lukeSkywalker.html(lukeSkywalkerJPG);
+    //         this.html(this.JPG + "Life Force: " + this.lifeForce + "<br>Attack Force: " + this.attackForce);
+    //         gameSpace.append(this.div);
+    //         animateCSS("#lukeSkywalker", "zoomInRight");
+    //         $('#lukeSkywalker').on("click", function () {
+    //             console.log("lukeSkywalker chosen");
+    //             hero.html(this.JPG);
+    //             heroName = "Luke Skywalker";
+    //             heroLifeForce = this.lifeForce;
+    //             heroAttackForceStart = this.LifeForce;
+    //             heroAttackForce = this.AttackForce;
+    //             blankOutHeroChoice();
+    //         });
 
-        }
+    //     }
 
-    }
+    // }
 
     /**
      * Called from {@link preGame}, displays 3 hero images with onClick to choose hero, then {@link blankOutHeroChoice}

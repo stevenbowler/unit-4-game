@@ -52,6 +52,107 @@ background-color: black !important;
   margin: 50px;
 }
 
+@keyframes scale-easeInBounceLeft {
+	0% {
+		transform: translateX(0%);
+	}
+
+	4% {
+		transform: translateX(-1.54%);
+	}
+
+	8% {
+		transform: translateX(-0.66%);
+	}
+
+	18% {
+		transform: translateX(-6.25%);
+	}
+
+	26% {
+		transform: translateX(-1.63%);
+	}
+
+	46% {
+		transform: translateX(-24.98%);
+	}
+
+	64% {
+		transform: translateX(-1.99%);
+	}
+
+	76% {
+		transform: translateX(-56.44%);
+	}
+
+	88% {
+		transform: translateX(-89.11%);
+	}
+
+	100% {
+		transform: translateX(-100%);
+	}
+
+}
+
+@keyframes scale-easeInBounceRight {
+	0% {
+		transform: translateX(0%);
+	}
+
+	4% {
+		transform: translateX(1.54%);
+	}
+
+	8% {
+		transform: translateX(0.66%);
+	}
+
+	18% {
+		transform: translateX(6.25%);
+	}
+
+	26% {
+		transform: translateX(1.63%);
+	}
+
+	46% {
+		transform: translateX(24.98%);
+	}
+
+	64% {
+		transform: translateX(1.99%);
+	}
+
+	76% {
+		transform: translateX(56.44%);
+	}
+
+	88% {
+		transform: translateX(89.11%);
+	}
+
+	100% {
+		transform: translateX(100%);
+	}
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 .iframe-container {

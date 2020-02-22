@@ -253,7 +253,7 @@ const gameAudio = document.getElementById("gameAudio");
  * @default
  */
 const hero = $("<div id=hero>");
-
+/**<div class="b2" data-target="true" style="animation: 1000ms linear 0s 1 normal both running scale-easeInBounce;">That function</div> */
 
 /**
  * Outer edge of hero in px {@link contact}
