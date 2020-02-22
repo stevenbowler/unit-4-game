@@ -7,6 +7,14 @@ $(document).ready(function () {
      * @function top
      */
     const top = () => { }
+
+    /**
+     * test for phones, first touch enters program
+     */
+    $("#gameSpace").on("touchstart", function () {
+        playAudio();
+    });
+
     /**
      * Main entrance point for the entire program
      * @function  $(document).keyup
@@ -57,6 +65,7 @@ $(document).ready(function () {
                 break;
         }
     });
+
 
     // hero.effect("explode", "slow");
     // hero.css({ display: "block" });
@@ -229,6 +238,8 @@ $(document).ready(function () {
             console.log("lukeSkywalker chosen");
             hero
                 .html(lukeSkywalkerJPG)
+                .css({ top: "0px" })
+                .css({ left: "0px" })
                 .css({ display: "block" });
             heroName = "Luke Skywalker";
             heroLifeForce = lukeSkywalkerLifeForce;
@@ -248,6 +259,8 @@ $(document).ready(function () {
             console.log("yoda chosen");
             hero
                 .html(yodaJPG)
+                .css({ top: "0px" })
+                .css({ left: "0px" })
                 .css({ display: "block" });
             heroName = "Yoda";
             heroLifeForce = yodaLifeForce;
@@ -267,6 +280,8 @@ $(document).ready(function () {
             console.log("benObiwan chosen");
             hero
                 .html(benObiwanJPG)
+                .css({ top: "0px" })
+                .css({ left: "0px" })
                 .css({ display: "block" });
             heroName = "Ben Obiwan";
             heroLifeForce = benObiwanLifeForce;
@@ -301,6 +316,7 @@ $(document).ready(function () {
         // hero.html(lukeSkywalkerJPG);
         // hero.html(lukeSkywalkerJPG);
         gameSpace.append(hero);
+        // homeHero();
         chooseVillain();
 
     }
@@ -618,8 +634,8 @@ $(document).ready(function () {
      * */
     const homeHero = () => {
         animateCSS("#hero", "zoomOutLeft");
-        hero.css("top", "0px");
-        hero.css("left", "0px");
+        hero.css({ top: "0px" });
+        hero.css({ left: "0px" });
     }
 
 
