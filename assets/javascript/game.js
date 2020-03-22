@@ -45,7 +45,7 @@ $(document).ready(function () {
 
             // Move Buttons (Keyboard Right)
             case 39:
-                heroMove("right", "+=100px");
+                heroMove("right", "+=300px");
                 // hero.animate({ left: "+=50px" }, "slow");
                 break;
 
@@ -58,7 +58,7 @@ $(document).ready(function () {
             // Move Buttons (Keyboard Left)
             case 37:
                 // hero.animate({ left: "-=50px" }, "slow");
-                heroMove("left", "-=100px");
+                heroMove("left", "-=300px");
                 break;
 
             default:
@@ -85,41 +85,33 @@ $(document).ready(function () {
      */
     const heroMove = (direction, offsetPX) => {
         var offsetNumber = parsePX(offsetPX.slice(2));
+        console.log("offsetNumber: ", offsetNumber);
+        console.log("heroTop: ", hero.css("top"));
+        console.log("heroLeft: ", hero.css("left"));
         var halfOffSetPX = "+" + Number(offsetNumber / 2).toString() + "px";
         switch (direction) { // if try to move beyond gameSpace, set the player back in gameSpace
             case "up": if (parsePX(hero.css("top")) <= 0) { hero.css("top", 0); return; } break;
             case "down": if (parsePX(hero.css("top")) + hero.height() + offsetNumber > gameSpaceHeight) { hero.css("top", gameSpaceHeight - hero.height()); return; } break;
             case "left": if (parsePX(hero.css("left")) <= 0) { hero.css("left", 0); return; } break;
-            case "right": if (parsePX(hero.css("left")) + hero.width() + offsetNumber >= gameSpaceWidth) { hero.css("top", gameSpaceWidth - hero.width()); return; } break;
+            case "right": if (parsePX(hero.css("left")) + hero.width() + offsetNumber >= gameSpaceWidth) { hero.animate({ left: (gameSpaceWidth - hero.width()).toString() + "px" }); return; } break;
+            // case "right": if (parsePX(hero.css("left")) + hero.width() + offsetNumber >= gameSpaceWidth) { hero.css("left", gameSpaceWidth - hero.width()); return; } break;
         }
         switch (direction) {  // otherwise move the hero
             case "up": {
-                hero.animate({ top: offsetPX }, 600, "linear"); break;
+                hero.animate({ top: offsetPX }, 200, "linear"); break;
             }
             case "down": {
-                hero.animate({ top: offsetPX }, 600, "linear"); break;
+                hero.animate({ top: offsetPX }, 200, "linear"); break;
             }
             case "left": {
-                hero.animate({ left: offsetPX }, {
-                    duration: 1000,
-                    specialEasing: {
-                        left: "easeOutBounce"
-                    }
-                }); break;
+                // hero.css("animation", "1000ms linear 0s 1 normal both running scale-easeInBounceLeft");  // animation trials without jquery easing
+                // hero.animate({ left: "-" + halfOffSetPX });
+                // hero.css("animation", "1000ms linear 0s 1 normal both running");
+                // break;
+                hero.animate({ left: (parsePX(hero.css("left")) - offsetNumber).toString() + "px" }, 600, "linear"); break;
             }
-            // case "left": {
-            //             // hero.css("animation", "1000ms linear 0s 1 normal both running scale-easeInBounceLeft");  // animation trials without jquery easing
-            //             // hero.animate({ left: "-" + halfOffSetPX });
-            //             // hero.css("animation", "1000ms linear 0s 1 normal both running");
-            //             // break;
-            //             hero.animate({ left: offsetPX }, 600, "linear"); break;
-            //         }
             case "right": {
-                hero.css("animation", "1000ms linear 0s 1 normal both running scale-easeInBounceRight");  // animation trials without jquery easing
-                hero.animate({ left: offsetPX });
-                hero.css("animation", "1000ms linear 0s 1 normal both running");
-                // hero.css("animation", "1000ms linear 0s 1 normal both running scale-easeInBounceRight"); // animation trials
-                // hero.animate({ left: offsetPX }, 600, "linear"); break;
+                hero.animate({ left: (parsePX(hero.css("left")) + offsetNumber).toString() + "px" }, 600, "linear"); break;
             }
         }
     }
@@ -154,11 +146,11 @@ $(document).ready(function () {
 
     });
     $(".left-button").on("click", function () {
-        heroMove("left", "-=100px");
+        heroMove("left", "-=300px");
         // hero.animate({ left: "-=50px" }, "slow");
     });
     $(".right-button").on("click", function () {
-        heroMove("right", "+=100px");
+        heroMove("right", "+=300px");
         // hero.animate({ left: "+=50px" }, "slow");
     });
 
@@ -555,14 +547,14 @@ $(document).ready(function () {
         console.log("startGameTimer");
         timerID = setInterval(
             () => handleMoves(),
-            1000);
+            250);
     }
 
     /**
      * called from {@link onContact} if either {@link heroLifeForce} or {@link villainLifeForce} < 0 
      *      turn off game timer when each round of the game
      * @function stopGameTimer
- */
+    */
     const stopGameTimer = () => {
         clearInterval(timerID);
     }
