@@ -2,6 +2,7 @@
 Homework 4 JQuery
 
 Star Wars Game
+https://stevenbowler.github.io/unit-4-game/
 
 Note: the bootstrap navbar includes links to the repository, search of repository, documentation, game tutorial.
 
